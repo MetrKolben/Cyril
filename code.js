@@ -49,7 +49,7 @@ const cHeight = defHeight * scale;
 var inserted = new Array();
 var notInserted = [
     {organ: new Organ("./imgs/intestines.png", 700*scale, 20*scale, 200*scale, 240*scale, 280*scale, 620*scale, 1)},
-    {organ: new Organ("./imgs/bladder.png", 315*scale, 700*scale, 130*scale, 160*scale, 315*scale, 700*scale, 2)},
+    {organ: new Organ("./imgs/bladder.png", 850*scale, 1400*scale, 130*scale, 160*scale, 315*scale, 700*scale, 2)},
     {organ: new Organ("./imgs/stomach.png", 330*scale, 500*scale, 170*scale, 160*scale, 330*scale, 500*scale, 3)},
     {organ: new Organ("./imgs/kidneys.png", 280*scale, 560*scale, 200*scale, 120*scale, 280*scale, 560*scale, 4)},
     {organ: new Organ("./imgs/liver.png", 260*scale, 500*scale, 190*scale, 130*scale, 260*scale, 500*scale, 5)},
