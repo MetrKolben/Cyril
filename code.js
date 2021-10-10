@@ -67,7 +67,6 @@ function drag(evt) {
 
 function click(evt) {
     SELECTED_ORGAN = getSelectedOrgan(getEvtX(evt.x), getEvtY(evt.y));
-    // console.log(getSelectedOrgan(getEvtX(evt.x), getEvtY(evt.y)));
 }
 
 function getSelectedOrgan(x, y) {
