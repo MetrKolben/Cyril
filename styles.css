@@ -13,7 +13,7 @@ canvas{
     border: 5px solid black;
     border-radius: 20mm;
     background-color: white;
-    background-image: url("/imgs/Cyril.png");
+    background-image: url("./imgs/Cyril.png");
     background-size: contain;
     background-repeat: no-repeat;
 }

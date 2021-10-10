@@ -1,6 +1,23 @@
-class Organ{
+let lock = true;
+/*class Organ{
     constructor(src, x, y, width, height, endX, endY, endZ) {
         this.src = src;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.endX = endX;
+        this.endY = endY;
+        this.endZ = endZ;
+    }
+
+}*/
+class Organ{
+    constructor(src, x, y, width, height, endX, endY, endZ) {
+        this.img = new Image();
+        this.img.src = src;
+        /*this.img.width = 1777;
+        this.img.height = 2034;*/
         this.x = x;
         this.y = y;
         this.width = width;
@@ -24,9 +41,20 @@ function repaint() {
     //ctx.drawImage(img, 100, 100, 100, 100);
     //ctx.drawImage(new Image(organ.organ.src), organ.x, organ.y, organ.width, organ.height);
     for(organ of notInserted) {
-        var img = new Image();
+        /*var img = new Image();
         img.src = organ.organ.src;
+        var o = organ.organ;*/
+        var img = organ.organ.img;
+        
         var o = organ.organ;
+        if(lock) {
+            console.log(organ.organ.img.src);
+            lock = false;
+        }
+        //img.onload = function() {
+        //    canvas.width = this.naturalWidth;
+        //    canvas.height = this.naturalHeight;
+        //};
         ctx.drawImage(img, o.x, o.y, o.width, o.height);
     }
     
@@ -43,7 +71,7 @@ function main() {
 
 const defWidth = 1300;
 const defHeight = 1600;
-const scale = window.outerWidth / 1920 * 2;
+const scale = window.outerWidth / 1920 / 2;
 const cWidth = defWidth * scale;
 const cHeight = defHeight * scale;
 var inserted = new Array();
@@ -62,6 +90,7 @@ var notInserted = [
 const canvas = document.getElementById("canvas");
 canvas.width = cWidth;
 canvas.height = cHeight;
+
 const ctx = canvas.getContext("2d");
 let organ = notInserted[0];
 //ctx.drawImage(organ.img, organ.x, organ.y, organ.width, organ.height);
