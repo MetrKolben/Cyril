@@ -71,7 +71,7 @@ function main() {
 
 const defWidth = 1300;
 const defHeight = 1600;
-const scale = window.outerWidth / 1920 / 2;
+const scale = window.outerWidth / 1920 *2;
 const cWidth = defWidth * scale;
 const cHeight = defHeight * scale;
 var inserted = new Array();
@@ -92,6 +92,7 @@ canvas.width = cWidth;
 canvas.height = cHeight;
 
 const ctx = canvas.getContext("2d");
+//ctx.scale(0.5, 0.5);
 let organ = notInserted[0];
 //ctx.drawImage(organ.img, organ.x, organ.y, organ.width, organ.height);
 
