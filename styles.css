@@ -10,7 +10,7 @@ div{
 }
 
 canvas{
-    width: 650px;
+    width: 35%;
     border: 5px solid black;
     border-radius: 20mm;
     background-color: white;
