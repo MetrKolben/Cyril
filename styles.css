@@ -13,8 +13,36 @@ canvas{
     width: 35%;
     border: 5px solid black;
     border-radius: 20mm;
-    background-color: white;
-    background-image: url("./imgs/Cyril.png");
+    background-color: #353334;
+    animation: bcg 2s infinite;
+    /* background-image: url("./imgs/Cyril.png"); */
+    /* background-image: url("./imgs/menu-blank.png"); */
     background-size: contain;
     background-repeat: no-repeat;
+}
+
+.game{
+    animation: gamebcg 2s 1;
+    background-image: url("./imgs/Cyril.png");
+    /* animation: bcg 2s infinite; */
+}
+
+.gameover{
+    animation: overbcg 1s 1;
+}
+
+@keyframes overbcg{
+    0%{background-image:  url("./imgs/Cyril.png");}
+    100%{background-image:  url("./imgs/bcg.png");}
+}
+
+@keyframes gamebcg{
+    0%{background-image:  url("./imgs/menu-blank.png");}
+    100%{background-image:  url("./imgs/Cyril.png");}
+}
+
+@keyframes bcg{
+    0%{background-image:  url("./imgs/menu-blank.png");}
+    50%{background-image:  url("./imgs/menu-con.png");}
+    100%{background-image:  url("./imgs/menu-blank.png");}
 }

@@ -1,9 +1,17 @@
+var first = true;
 var SELECTED_ORGAN = null;
 var SELECTED = false;
 var offset = {
     x:0,
     y:0
 }
+var mistakes = 0;
+var numberOfInserted = 0;
+var redCross = new Image();
+var grayCross = new Image();
+redCross.src = "./imgs/red-cross.png";
+grayCross.src = "./imgs/gray-cross.png";
+var interval;
 
 class Organ{
     constructor(src, x, y, width, height, endX, endY, startX, startY, endZ) {
@@ -18,12 +26,14 @@ class Organ{
         this.endZ = endZ;
         this.startX = startX;
         this.startY = startY;
+        this.inPlace = false;
     }
 
 }
 
 function repaint() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawMistakes(0, 0);
     for(organ of notInserted) {
         var img = organ.organ.img;
         var o = organ.organ;
@@ -32,11 +42,22 @@ function repaint() {
     
 }
 
-function main() {
-    setInterval(repaint, 1000/60);
-    console.log(window.outerWidth);
+function drawMistakes(x, y) {
+    for(let i = 1; i <= 4; i++) {
+        ctx.drawImage((i <= mistakes ? redCross : grayCross), x+i*55*scale, y+50*scale, 50*scale, 50*scale);
+    }
+}
 
+function main() {
+    ctx.fillStyle = "black";
+    ctx.font = 100*scale + 'px Calibri';
+    ctx.textAlign = "center";
     canvas.addEventListener("mousedown", click);
+}
+
+function start() {
+    interval = setInterval(repaint, 1000/60);
+
     canvas.addEventListener("mousemove", drag);
     canvas.addEventListener("mouseup", release);
 }
@@ -46,13 +67,31 @@ function release(evt) {
         if(isClose()) {
             SELECTED_ORGAN.x = SELECTED_ORGAN.endX;
             SELECTED_ORGAN.y = SELECTED_ORGAN.endY;
+            SELECTED_ORGAN.inPlace = true;
+            numberOfInserted++;
         } else {
+            mistakes++;
             SELECTED_ORGAN.x = SELECTED_ORGAN.startX;
             SELECTED_ORGAN.y = SELECTED_ORGAN.startY;
         }
     }
     SELECTED = false;
     SELECTED_ORGAN = null;
+    if(mistakes > 3 || numberOfInserted > 7) {
+        canvas.classList.remove("game");
+        canvas.classList.add("gameover");
+        clearInterval(interval);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        setTimeout(gameover, 1000);
+    }
+}
+
+function gameover() {
+    ctx.font = 50*scale + "px Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText("Stav: ", 500*scale, 200*scale);
+    ctx.fillText("*TEST*", 550*scale, 200*scale);
+    drawMistakes(530*scale, 160*scale);
 }
 
 function drag(evt) {
@@ -62,17 +101,23 @@ function drag(evt) {
         SELECTED_ORGAN.x = x - offset.x;
         SELECTED_ORGAN.y = y - offset.y;
     }
-    console.log(notInserted);
 }
 
 function click(evt) {
-    SELECTED_ORGAN = getSelectedOrgan(getEvtX(evt.x), getEvtY(evt.y));
+    if(!first) {
+        SELECTED_ORGAN = getSelectedOrgan(getEvtX(evt.x), getEvtY(evt.y));
+    } else {
+        first = false;
+        canvas.classList.add("game");
+        start();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
 }
 
 function getSelectedOrgan(x, y) {
     for(let i = notInserted.length-1; i >=0; i--) {
         var o = notInserted[i].organ;
-        if((x > o.x && x < o.x+o.width) && (y > o.y && y < o.y+o.height)) {
+        if((!o.inPlace) && (x > o.x && x < o.x+o.width) && (y > o.y && y < o.y+o.height)) {
             offset = {
                 x: x-o.x,
                 y: y-o.y
@@ -112,14 +157,13 @@ const scale = window.outerWidth / 1920 * 2;
 const CLOSE = 50 * scale;
 const cWidth = defWidth * scale;
 const cHeight = defHeight * scale;
-var inserted = new Array();
 var notInserted = [
     {organ: new Organ("./imgs/intestines.png", 700*scale, 20*scale, 200*scale, 240*scale, 280*scale, 620*scale, 700*scale, 20*scale, 1)},
     {organ: new Organ("./imgs/bladder.png", 850*scale, 1400*scale, 130*scale, 160*scale, 315*scale, 700*scale, 850*scale, 1400*scale, 2)},
     {organ: new Organ("./imgs/stomach.png", 600*scale, 1100*scale, 160*scale, 160*scale, 330*scale, 500*scale, 600*scale, 1100*scale, 3)},
     {organ: new Organ("./imgs/kidneys.png", 900*scale, 620*scale, 200*scale, 120*scale, 280*scale, 560*scale, 900*scale, 620*scale, 4)},
     {organ: new Organ("./imgs/liver.png", 1000*scale, 1000*scale, 190*scale, 130*scale, 260*scale, 500*scale, 1000*scale, 1000*scale, 5)},
-    {organ: new Organ("./imgs/lungs.png", 1000*scale, 100*scale, 280*scale, 240*scale, 240*scale, 280*scale, 1000*scale, 100*scale, 6)},
+    {organ: new Organ("./imgs/lungs.png", 1000*scale, 100*scale, 280*scale, 240*scale, 245*scale, 280*scale, 1000*scale, 100*scale, 6)},
     {organ: new Organ("./imgs/heart.png", 800*scale, 900*scale, 100*scale, 140*scale, 345*scale, 300*scale, 800*scale, 900*scale, 7)},
     {organ: new Organ("./imgs/brain.png", 700*scale, 400*scale, 120*scale, 90*scale, 320*scale, 10*scale, 700*scale, 400*scale, 8)}
 ];
