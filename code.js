@@ -1,3 +1,4 @@
+var finished = false;
 var first = true;
 var SELECTED_ORGAN = null;
 var SELECTED = false;
@@ -33,7 +34,7 @@ class Organ{
 
 function repaint() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawMistakes(0, 0);
+    drawMistakes(0, 50*scale);
     for(organ of notInserted) {
         var img = organ.organ.img;
         var o = organ.organ;
@@ -44,7 +45,7 @@ function repaint() {
 
 function drawMistakes(x, y) {
     for(let i = 1; i <= 4; i++) {
-        ctx.drawImage((i <= mistakes ? redCross : grayCross), x+i*55*scale, y+50*scale, 50*scale, 50*scale);
+        ctx.drawImage((i <= mistakes ? redCross : grayCross), x+i*55*scale, y, 50*scale, 50*scale);
     }
 }
 
@@ -56,7 +57,7 @@ function main() {
 }
 
 function start() {
-    interval = setInterval(repaint, 1000/60);
+    interval = setInterval(repaint, 1000/144);
 
     canvas.addEventListener("mousemove", drag);
     canvas.addEventListener("mouseup", release);
@@ -70,28 +71,47 @@ function release(evt) {
             SELECTED_ORGAN.inPlace = true;
             numberOfInserted++;
         } else {
-            mistakes++;
+            if(Math.sqrt(Math.pow(Math.abs(SELECTED_ORGAN.x - SELECTED_ORGAN.startX) , 2) + Math.pow(Math.abs(SELECTED_ORGAN.y - SELECTED_ORGAN.startY) , 2)) > 100*scale){
+                mistakes++;
+            }
             SELECTED_ORGAN.x = SELECTED_ORGAN.startX;
             SELECTED_ORGAN.y = SELECTED_ORGAN.startY;
         }
     }
     SELECTED = false;
     SELECTED_ORGAN = null;
+    
     if(mistakes > 3 || numberOfInserted > 7) {
         canvas.classList.remove("game");
         canvas.classList.add("gameover");
         clearInterval(interval);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         setTimeout(gameover, 1000);
+        finished = true;
     }
 }
 
+
 function gameover() {
-    ctx.font = 50*scale + "px Arial";
+    // canvas.classList.remove("gameover");
+    canvas.classList.add("restart");
+    ctx.font = 75*scale + "px Arial";
     ctx.fillStyle = "white";
-    ctx.fillText("Stav: ", 500*scale, 200*scale);
-    ctx.fillText("*TEST*", 550*scale, 200*scale);
-    drawMistakes(530*scale, 160*scale);
+    //left
+    ctx.textAlign = "right";
+    ctx.fillText("Počet chyb: ", 640*scale, 400*scale);
+    // ctx.fillText("Stav: ", 640*scale, 200*scale);
+    ctx.fillText("Úspěšnost: ", 640*scale, 600*scale);
+    //right
+    ctx.textAlign = "left";
+    ctx.fillText(Math.round(100*((numberOfInserted)/(mistakes + 8))) + "%", 640*scale, 600*scale);
+    // ctx.fillText((mistakes < 4 ? "Výhra" : "Prohra"), 640*scale, 200*scale);
+    drawMistakes(590*scale, 355*scale);
+    //center
+    ctx.textAlign = "center";
+    ctx.fillText((mistakes < 4 ? "Vyhrál jsi!" : "Prohrál jsi!"), canvas.width/2, 200*scale);
+    // ctx.fillText("Restartuješ pomocí klávesy F5", canvas.width/2, 1300*scale);
+    
 }
 
 function drag(evt) {
@@ -103,14 +123,36 @@ function drag(evt) {
     }
 }
 
+function restart() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.classList.remove("gameover");
+    canvas.classList.remove("restart");
+    first = true;
+    for(organ of notInserted) {
+        o = organ.organ;
+        o.x = o.startX;
+        o.y = o.startY;
+        o.inPlace = false;
+    }
+    numberOfInserted = 0;
+}
+
 function click(evt) {
     if(!first) {
         SELECTED_ORGAN = getSelectedOrgan(getEvtX(evt.x), getEvtY(evt.y));
     } else {
         first = false;
+        canvas.classList.remove("gameover");
+        canvas.classList.remove("game");
+        canvas.classList.remove("gameover");
         canvas.classList.add("game");
         start();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    if(finished) {
+        finished = false;
+        mistakes = 0;
+        restart();
     }
 }
 

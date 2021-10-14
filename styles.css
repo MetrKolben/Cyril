@@ -31,6 +31,16 @@ canvas{
     animation: overbcg 1s 1;
 }
 
+.restart{
+    animation: restart 2s infinite;
+}
+
+@keyframes restart{
+    0%{background-image:  url("./imgs/gameover.png");}
+    50%{background-image:  url("./imgs/bcg.png");}
+    100%{background-image:  url("./imgs/gameover.png");}
+}
+
 @keyframes overbcg{
     0%{background-image:  url("./imgs/Cyril.png");}
     100%{background-image:  url("./imgs/bcg.png");}
