@@ -3,6 +3,10 @@ html{
     background: linear-gradient(#e66465, #9198e5);
 }
 
+body {
+    overscroll-behavior: none;
+}
+
 div{
     display: flex;
     align-items: center;
@@ -10,9 +14,10 @@ div{
 }
 
 canvas{
-    width: 35%;
-    border: 5px solid black;
-    border-radius: 20mm;
+    /* width: 35%; */
+    /* height: 90%; */
+    border: 3px solid black;
+    border-radius: 6mm;
     background-color: #353334;
     animation: bcg 2s infinite;
     background-size: contain;

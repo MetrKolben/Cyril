@@ -54,13 +54,32 @@ function main() {
     ctx.font = 100*scale + 'px Calibri';
     ctx.textAlign = "center";
     canvas.addEventListener("mousedown", click);
+    canvas.addEventListener("touchstart", tap);
 }
 
 function start() {
     interval = setInterval(repaint, 1000/144);
 
+    canvas.addEventListener("touchmove", slide);
     canvas.addEventListener("mousemove", drag);
+    canvas.addEventListener("touchend", touchRelease);
     canvas.addEventListener("mouseup", release);
+}
+
+function touchRelease(evt) {
+    release(evt);
+}
+
+function slide(evt) {
+    let loc = {x: evt.touches[0].clientX,
+    y: evt.touches[0].clientY}
+    drag(loc);
+}
+
+function tap(evt) {
+    let loc = {x: evt.touches[0].clientX,
+    y: evt.touches[0].clientY}
+    click(loc);
 }
 
 function release(evt) {
@@ -81,14 +100,22 @@ function release(evt) {
     SELECTED = false;
     SELECTED_ORGAN = null;
     
-    if(mistakes > 3 || numberOfInserted > 7) {
+    if((mistakes > 3 || numberOfInserted > 7) && !finished) {
         canvas.classList.remove("game");
         canvas.classList.add("gameover");
         clearInterval(interval);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.removeEventListener("mousedown", click);
+        canvas.removeEventListener("touchstart", tap);
+        setTimeout(restartListeners, 1200);
         setTimeout(gameover, 1000);
         finished = true;
     }
+}
+
+function restartListeners() {
+    canvas.addEventListener("mousedown", click);
+    canvas.addEventListener("touchstart", tap);
 }
 
 
@@ -121,6 +148,9 @@ function drag(evt) {
 
 function restart() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.removeEventListener("mousedown", click);
+    canvas.removeEventListener("touchstart", tap);
+    setTimeout(restartListeners, 200);
     canvas.classList.remove("gameover");
     canvas.classList.remove("restart");
     first = true;
@@ -209,4 +239,11 @@ var notInserted = [
 const canvas = document.getElementById("canvas");
 canvas.width = cWidth;
 canvas.height = cHeight;
+console.log(canvas.clientHeight);
+if(window.innerHeight > window.innerWidth) {
+    canvas.style = "width: " + (window.outerWidth*0.9) + "px;";
+} else {
+    canvas.style = "width: " + (window.outerWidth*0.35) + "px;";
+}
+
 const ctx = canvas.getContext("2d");
