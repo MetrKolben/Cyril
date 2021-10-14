@@ -93,24 +93,20 @@ function release(evt) {
 
 
 function gameover() {
-    // canvas.classList.remove("gameover");
     canvas.classList.add("restart");
     ctx.font = 75*scale + "px Arial";
     ctx.fillStyle = "white";
     //left
     ctx.textAlign = "right";
     ctx.fillText("Počet chyb: ", 640*scale, 400*scale);
-    // ctx.fillText("Stav: ", 640*scale, 200*scale);
     ctx.fillText("Úspěšnost: ", 640*scale, 600*scale);
     //right
     ctx.textAlign = "left";
     ctx.fillText(Math.round(100*((numberOfInserted)/(mistakes + 8))) + "%", 640*scale, 600*scale);
-    // ctx.fillText((mistakes < 4 ? "Výhra" : "Prohra"), 640*scale, 200*scale);
     drawMistakes(590*scale, 355*scale);
     //center
     ctx.textAlign = "center";
     ctx.fillText((mistakes < 4 ? "Vyhrál jsi!" : "Prohrál jsi!"), canvas.width/2, 200*scale);
-    // ctx.fillText("Restartuješ pomocí klávesy F5", canvas.width/2, 1300*scale);
     
 }
 

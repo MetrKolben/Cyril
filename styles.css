@@ -15,8 +15,6 @@ canvas{
     border-radius: 20mm;
     background-color: #353334;
     animation: bcg 2s infinite;
-    /* background-image: url("./imgs/Cyril.png"); */
-    /* background-image: url("./imgs/menu-blank.png"); */
     background-size: contain;
     background-repeat: no-repeat;
 }
@@ -24,7 +22,6 @@ canvas{
 .game{
     animation: gamebcg 2s 1;
     background-image: url("./imgs/Cyril.png");
-    /* animation: bcg 2s infinite; */
 }
 
 .gameover{
