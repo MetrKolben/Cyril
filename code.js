@@ -93,6 +93,7 @@ function release(evt) {
             if(Math.sqrt(Math.pow(Math.abs(SELECTED_ORGAN.x - SELECTED_ORGAN.startX) , 2) + Math.pow(Math.abs(SELECTED_ORGAN.y - SELECTED_ORGAN.startY) , 2)) > 100*scale){
                 mistakes++;
             }
+            drawMistakes(0, 50*scale);
             SELECTED_ORGAN.x = SELECTED_ORGAN.startX;
             SELECTED_ORGAN.y = SELECTED_ORGAN.startY;
         }
@@ -101,16 +102,20 @@ function release(evt) {
     SELECTED_ORGAN = null;
     
     if((mistakes > 3 || numberOfInserted > 7) && !finished) {
-        canvas.classList.remove("game");
-        canvas.classList.add("gameover");
-        clearInterval(interval);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        canvas.removeEventListener("mousedown", click);
-        canvas.removeEventListener("touchstart", tap);
-        setTimeout(restartListeners, 1200);
-        setTimeout(gameover, 1000);
-        finished = true;
+        setTimeout(wait, 100);
     }
+}
+
+function wait() {
+    canvas.classList.remove("game");
+    canvas.classList.add("gameover");
+    clearInterval(interval);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.removeEventListener("mousedown", click);
+    canvas.removeEventListener("touchstart", tap);
+    setTimeout(restartListeners, 1200);
+    setTimeout(gameover, 1000);
+    finished = true;
 }
 
 function restartListeners() {
@@ -121,20 +126,19 @@ function restartListeners() {
 
 function gameover() {
     canvas.classList.add("restart");
-    ctx.font = 75*scale + "px Arial";
-    ctx.fillStyle = "white";
+    ctx.font = 80*scale + "px Arial";
+    ctx.fillStyle = "black";
     //left
     ctx.textAlign = "right";
-    ctx.fillText("Počet chyb: ", 640*scale, 400*scale);
-    ctx.fillText("Úspěšnost: ", 640*scale, 600*scale);
+    ctx.fillText("Počet chyb:", canvas.width/2, 300*scale);
+    ctx.fillText("Úspěšnost:", canvas.width/2, 500*scale);
     //right
     ctx.textAlign = "left";
-    ctx.fillText(Math.round(100*((numberOfInserted)/(mistakes + 8))) + "%", 640*scale, 600*scale);
-    drawMistakes(590*scale, 355*scale);
+    var percentage = Math.round(100*((numberOfInserted)/(mistakes + 8)));
+    ctx.fillText(" " +percentage + "%", canvas.width/2, 500*scale);
+    drawMistakes(625*scale, 255*scale);
     //center
     ctx.textAlign = "center";
-    ctx.fillText((mistakes < 4 ? "Vyhrál jsi!" : "Prohrál jsi!"), canvas.width/2, 200*scale);
-    
 }
 
 function drag(evt) {
