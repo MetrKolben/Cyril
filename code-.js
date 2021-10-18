@@ -6,21 +6,12 @@ var offset = {
     x:0,
     y:0
 }
-var numberOfMistakes = 0;
-var numberOfFinished = 0;
-// var redCross = new Image();
-// var grayCross = new Image();
-var grayDot = new Image();
-var redDot = new Image();
-var greenDot = new Image();
-redDot.src = "./imgs/red-dot.png";
-greenDot.src = "./imgs/green-dot.png";
-grayDot.src = "./imgs/gray-dot.png";
-// var mistakes = new Array(8).fill(grayDot);
-var mistakes = new Array(8).fill("gray");
-
-// redCross.src = "./imgs/red-cross.png";
-// grayCross.src = "./imgs/gray-cross.png";
+var mistakes = 0;
+var numberOfInserted = 0;
+var redCross = new Image();
+var grayCross = new Image();
+redCross.src = "./imgs/red-cross.png";
+grayCross.src = "./imgs/gray-cross.png";
 var interval;
 
 class Organ{
@@ -36,49 +27,25 @@ class Organ{
         this.endZ = endZ;
         this.startX = startX;
         this.startY = startY;
-        this.fixed = false;
-        this.wrong = false;
+        this.inPlace = false;
     }
 
 }
 
 function repaint() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawMistakes(50*scale, 50*scale);
+    drawMistakes(0, 50*scale);
     for(organ of notInserted) {
         var img = organ.organ.img;
         var o = organ.organ;
-        if(o.wrong) {
-            ctx.globalAlpha = 0.5;
-            ctx.drawImage(img, o.x, o.y, o.width, o.height);
-            ctx.globalAlpha = 1;
-            continue;
-        }
         ctx.drawImage(img, o.x, o.y, o.width, o.height);
     }
+    
 }
 
 function drawMistakes(x, y) {
-    for(let i = 0; i < 8; i++) {
-        ctx.fillStyle = mistakes[i];
-        // if(i < 4){
-        //     ctx.drawImage((mistakes[i]), x+i*65*scale, y, 50*scale, 50*scale);
-        // } else {
-        //     ctx.drawImage((mistakes[i]), x+(i - 4)*65*scale, y + 60*scale, 50*scale, 50*scale);
-        // }
-        if(i < 4){
-            // ctx.fillCircle(x+i*65*scale, y, 50*scale, 50*scale);
-            ctx.beginPath();
-            ctx.arc(x+i*70*scale, y, 30*scale, 0, 2 * Math.PI, false);
-            ctx.fill();
-        } else {
-            // ctx.fillCircle(x+(i - 4)*65*scale, y + 60*scale, 50*scale, 0, 2 * Math.PI, false);
-            ctx.beginPath();
-            ctx.arc(x+(i - 4)*70*scale, y + 70*scale, 30*scale, 0, 2 * Math.PI, false);
-            ctx.fill();
-        }
-        // ctx.drawImage((i <=numberOfMistakes ? redCross : grayCross), x+i*55*scale, y, 50*scale, 50*scale);
-        ctx.fillStyle = "black";
+    for(let i = 1; i <= 4; i++) {
+        ctx.drawImage((i <= mistakes ? redCross : grayCross), x+i*55*scale, y, 50*scale, 50*scale);
     }
 }
 
@@ -120,23 +87,13 @@ function release(evt) {
         if(isClose()) {
             SELECTED_ORGAN.x = SELECTED_ORGAN.endX;
             SELECTED_ORGAN.y = SELECTED_ORGAN.endY;
-            SELECTED_ORGAN.fixed = true;
-            numberOfFinished++;
-            // mistakes[numberOfFinished-1] = greenDot;
-            mistakes[numberOfFinished-1] = "green";
+            SELECTED_ORGAN.inPlace = true;
+            numberOfInserted++;
         } else {
             if(Math.sqrt(Math.pow(Math.abs(SELECTED_ORGAN.x - SELECTED_ORGAN.startX) , 2) + Math.pow(Math.abs(SELECTED_ORGAN.y - SELECTED_ORGAN.startY) , 2)) > 100*scale){
-                numberOfMistakes++;
-                SELECTED_ORGAN.fixed = true;
-                SELECTED_ORGAN.wrong = true;
-                numberOfFinished++;
-                // mistakes[numberOfFinished-1] = redDot;
-                mistakes[numberOfFinished-1] = "red";
+                mistakes++;
             }
-            ////////TO-DO
-            // drawMistakes(0, 50*scale);
-            drawMistakes(20*scale, 50*scale);
-            ////////TO-DO
+            drawMistakes(0, 50*scale);
             SELECTED_ORGAN.x = SELECTED_ORGAN.startX;
             SELECTED_ORGAN.y = SELECTED_ORGAN.startY;
         }
@@ -144,7 +101,7 @@ function release(evt) {
     SELECTED = false;
     SELECTED_ORGAN = null;
     
-    if((numberOfFinished == 8) && !finished) {
+    if((mistakes > 3 || numberOfInserted > 7) && !finished) {
         setTimeout(wait, 100);
     }
 }
@@ -171,18 +128,17 @@ function gameover() {
     canvas.classList.add("restart");
     ctx.font = 80*scale + "px Arial";
     ctx.fillStyle = "black";
-    ctx.textAlign = "center";
     //left
-    // ctx.textAlign = "right";
-    // ctx.fillText("Počet chyb:", canvas.width/2, 300*scale);
-    ctx.fillText("Výsledek: " + (8-numberOfMistakes) + "/" + 8, canvas.width/2, 500*scale);
+    ctx.textAlign = "right";
+    ctx.fillText("Počet chyb:", canvas.width/2, 300*scale);
+    ctx.fillText("Úspěšnost:", canvas.width/2, 500*scale);
     //right
-    // ctx.textAlign = "left";
-    // var percentage = Math.round(100*((numberOfFinished)/(mistakes + 8)));
-    // ctx.fillText(" " + (8-numberOfMistakes) + "/" + 8, canvas.width/2, 500*scale);
-    // drawMistakes(625*scale, 255*scale);
-    // //center
-
+    ctx.textAlign = "left";
+    var percentage = Math.round(100*((numberOfInserted)/(mistakes + 8)));
+    ctx.fillText(" " +percentage + "%", canvas.width/2, 500*scale);
+    drawMistakes(625*scale, 255*scale);
+    //center
+    ctx.textAlign = "center";
 }
 
 function drag(evt) {
@@ -206,10 +162,9 @@ function restart() {
         o = organ.organ;
         o.x = o.startX;
         o.y = o.startY;
-        o.wrong = false;
-        o.fixed = false;
+        o.inPlace = false;
     }
-    numberOfFinished = 0;
+    numberOfInserted = 0;
 }
 
 function click(evt) {
@@ -226,9 +181,7 @@ function click(evt) {
     }
     if(finished) {
         finished = false;
-        numberOfMistakes = 0;
-        //mistakes = new Array(8).fill(grayDot);
-        mistakes = new Array(8).fill("gray");
+        mistakes = 0;
         restart();
     }
 }
@@ -236,7 +189,7 @@ function click(evt) {
 function getSelectedOrgan(x, y) {
     for(let i = notInserted.length-1; i >=0; i--) {
         var o = notInserted[i].organ;
-        if((!o.fixed) && (x > o.x && x < o.x+o.width) && (y > o.y && y < o.y+o.height)) {
+        if((!o.inPlace) && (x > o.x && x < o.x+o.width) && (y > o.y && y < o.y+o.height)) {
             offset = {
                 x: x-o.x,
                 y: y-o.y
@@ -273,7 +226,7 @@ function getEvtY(y) {
 const defWidth = 1300;
 const defHeight = 1600;
 const scale = window.outerWidth / 1920 * 2;
-const CLOSE = 70 * scale;
+const CLOSE = 50 * scale;
 const cWidth = defWidth * scale;
 const cHeight = defHeight * scale;
 var notInserted = [
