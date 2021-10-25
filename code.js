@@ -8,19 +8,13 @@ var offset = {
 }
 var numberOfMistakes = 0;
 var numberOfFinished = 0;
-// var redCross = new Image();
-// var grayCross = new Image();
 var grayDot = new Image();
 var redDot = new Image();
 var greenDot = new Image();
 redDot.src = "./imgs/red-dot.png";
 greenDot.src = "./imgs/green-dot.png";
 grayDot.src = "./imgs/gray-dot.png";
-// var mistakes = new Array(8).fill(grayDot);
 var mistakes = new Array(8).fill("gray");
-
-// redCross.src = "./imgs/red-cross.png";
-// grayCross.src = "./imgs/gray-cross.png";
 var interval;
 
 class Organ{
@@ -61,23 +55,15 @@ function repaint() {
 function drawMistakes(x, y) {
     for(let i = 0; i < 8; i++) {
         ctx.fillStyle = mistakes[i];
-        // if(i < 4){
-        //     ctx.drawImage((mistakes[i]), x+i*65*scale, y, 50*scale, 50*scale);
-        // } else {
-        //     ctx.drawImage((mistakes[i]), x+(i - 4)*65*scale, y + 60*scale, 50*scale, 50*scale);
-        // }
         if(i < 4){
-            // ctx.fillCircle(x+i*65*scale, y, 50*scale, 50*scale);
             ctx.beginPath();
             ctx.arc(x+i*70*scale, y, 30*scale, 0, 2 * Math.PI, false);
             ctx.fill();
         } else {
-            // ctx.fillCircle(x+(i - 4)*65*scale, y + 60*scale, 50*scale, 0, 2 * Math.PI, false);
             ctx.beginPath();
             ctx.arc(x+(i - 4)*70*scale, y + 70*scale, 30*scale, 0, 2 * Math.PI, false);
             ctx.fill();
         }
-        // ctx.drawImage((i <=numberOfMistakes ? redCross : grayCross), x+i*55*scale, y, 50*scale, 50*scale);
         ctx.fillStyle = "black";
     }
 }
@@ -122,7 +108,6 @@ function release(evt) {
             SELECTED_ORGAN.y = SELECTED_ORGAN.endY;
             SELECTED_ORGAN.fixed = true;
             numberOfFinished++;
-            // mistakes[numberOfFinished-1] = greenDot;
             mistakes[numberOfFinished-1] = "green";
         } else {
             if(Math.sqrt(Math.pow(Math.abs(SELECTED_ORGAN.x - SELECTED_ORGAN.startX) , 2) + Math.pow(Math.abs(SELECTED_ORGAN.y - SELECTED_ORGAN.startY) , 2)) > 100*scale){
@@ -130,13 +115,9 @@ function release(evt) {
                 SELECTED_ORGAN.fixed = true;
                 SELECTED_ORGAN.wrong = true;
                 numberOfFinished++;
-                // mistakes[numberOfFinished-1] = redDot;
                 mistakes[numberOfFinished-1] = "red";
             }
-            ////////TO-DO
-            // drawMistakes(0, 50*scale);
             drawMistakes(20*scale, 50*scale);
-            ////////TO-DO
             SELECTED_ORGAN.x = SELECTED_ORGAN.startX;
             SELECTED_ORGAN.y = SELECTED_ORGAN.startY;
         }
@@ -172,16 +153,7 @@ function gameover() {
     ctx.font = 80*scale + "px Arial";
     ctx.fillStyle = "black";
     ctx.textAlign = "center";
-    //left
-    // ctx.textAlign = "right";
-    // ctx.fillText("Počet chyb:", canvas.width/2, 300*scale);
     ctx.fillText("Výsledek: " + (8-numberOfMistakes) + "/" + 8, canvas.width/2, 500*scale);
-    //right
-    // ctx.textAlign = "left";
-    // var percentage = Math.round(100*((numberOfFinished)/(mistakes + 8)));
-    // ctx.fillText(" " + (8-numberOfMistakes) + "/" + 8, canvas.width/2, 500*scale);
-    // drawMistakes(625*scale, 255*scale);
-    // //center
 
 }
 
@@ -227,7 +199,6 @@ function click(evt) {
     if(finished) {
         finished = false;
         numberOfMistakes = 0;
-        //mistakes = new Array(8).fill(grayDot);
         mistakes = new Array(8).fill("gray");
         restart();
     }
