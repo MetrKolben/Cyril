@@ -14,7 +14,7 @@ var greenDot = new Image();
 redDot.src = "./imgs/red-dot.png";
 greenDot.src = "./imgs/green-dot.png";
 grayDot.src = "./imgs/gray-dot.png";
-var mistakes = new Array(8).fill("gray");
+var mistakes = new Array(9).fill("gray");
 var interval;
 
 class Organ{
@@ -53,15 +53,19 @@ function repaint() {
 }
 
 function drawMistakes(x, y) {
-    for(let i = 0; i < 8; i++) {
+    for(let i = 0; i < 9; i++) {
         ctx.fillStyle = mistakes[i];
-        if(i < 4){
+        if(i < 3){
             ctx.beginPath();
             ctx.arc(x+i*70*scale, y, 30*scale, 0, 2 * Math.PI, false);
             ctx.fill();
+        } else  if (i < 6){
+            ctx.beginPath();
+            ctx.arc(x+(i - 3)*70*scale, y + 70*scale, 30*scale, 0, 2 * Math.PI, false);
+            ctx.fill();
         } else {
             ctx.beginPath();
-            ctx.arc(x+(i - 4)*70*scale, y + 70*scale, 30*scale, 0, 2 * Math.PI, false);
+            ctx.arc(x+(i - 6)*70*scale, y + 140*scale, 30*scale, 0, 2 * Math.PI, false);
             ctx.fill();
         }
         ctx.fillStyle = "black";
@@ -153,7 +157,7 @@ function gameover() {
     ctx.font = 80*scale + "px Arial";
     ctx.fillStyle = "black";
     ctx.textAlign = "center";
-    ctx.fillText("Výsledek: " + (8-numberOfMistakes) + "/" + 8, canvas.width/2, 500*scale);
+    ctx.fillText("Výsledek: " + (9-numberOfMistakes) + "/" + 9, canvas.width/2, 500*scale);
 
 }
 
@@ -199,7 +203,7 @@ function click(evt) {
     if(finished) {
         finished = false;
         numberOfMistakes = 0;
-        mistakes = new Array(8).fill("gray");
+        mistakes = new Array(9).fill("gray");
         restart();
     }
 }
@@ -248,14 +252,15 @@ const CLOSE = 70 * scale;
 const cWidth = defWidth * scale;
 const cHeight = defHeight * scale;
 var notInserted = [
-    {organ: new Organ("./imgs/intestines.png", 700*scale, 20*scale, 200*scale, 240*scale, 280*scale, 620*scale, 700*scale, 20*scale, 1)},
-    {organ: new Organ("./imgs/bladder.png", 850*scale, 1400*scale, 130*scale, 160*scale, 315*scale, 700*scale, 850*scale, 1400*scale, 2)},
-    {organ: new Organ("./imgs/stomach.png", 600*scale, 1100*scale, 160*scale, 160*scale, 330*scale, 500*scale, 600*scale, 1100*scale, 3)},
-    {organ: new Organ("./imgs/kidneys.png", 900*scale, 620*scale, 200*scale, 120*scale, 280*scale, 560*scale, 900*scale, 620*scale, 4)},
-    {organ: new Organ("./imgs/liver.png", 1000*scale, 1000*scale, 190*scale, 130*scale, 260*scale, 500*scale, 1000*scale, 1000*scale, 5)},
-    {organ: new Organ("./imgs/lungs.png", 1000*scale, 100*scale, 280*scale, 240*scale, 245*scale, 280*scale, 1000*scale, 100*scale, 6)},
-    {organ: new Organ("./imgs/heart.png", 800*scale, 900*scale, 100*scale, 140*scale, 345*scale, 300*scale, 800*scale, 900*scale, 7)},
-    {organ: new Organ("./imgs/brain.png", 700*scale, 400*scale, 120*scale, 90*scale, 320*scale, 10*scale, 700*scale, 400*scale, 8)}
+    {organ: new Organ("./imgs/intestines.png", 700*scale, 20*scale, 250*scale, 288*scale, 260*scale, 580*scale, 700*scale, 20*scale, 1)},
+    {organ: new Organ("./imgs/bladder.png", 850*scale, 1400*scale, 90*scale, 120*scale, 340*scale, 750*scale, 850*scale, 1400*scale, 2)},
+    {organ: new Organ("./imgs/stomach.png", 600*scale, 1100*scale, 160*scale, 180*scale, 330*scale, 470*scale, 600*scale, 1100*scale, 3)},
+    {organ: new Organ("./imgs/kidneys.png", 900*scale, 620*scale, 160*scale, 90*scale, 305*scale, 620*scale, 900*scale, 620*scale, 4)},
+    {organ: new Organ("./imgs/liver.png", 1000*scale, 1000*scale, 160*scale, 130*scale, 270*scale, 500*scale, 1000*scale, 1000*scale, 5)},
+    {organ: new Organ("./imgs/lungs.png", 1000*scale, 100*scale, 260*scale, 240*scale, 255*scale, 270*scale, 1000*scale, 100*scale, 6)},
+    {organ: new Organ("./imgs/heart.png", 800*scale, 900*scale, 100*scale, 140*scale, 335*scale, 340*scale, 800*scale, 900*scale, 7)},
+    {organ: new Organ("./imgs/brain.png", 700*scale, 400*scale, 120*scale, 90*scale, 320*scale, 10*scale, 700*scale, 400*scale, 8)},
+    {organ: new Organ("./imgs/pancreas.png", 900*scale, 400*scale, 80*scale, 35*scale, 320*scale, 580*scale, 900*scale, 400*scale, 9)}
 ];
 
 const canvas = document.getElementById("canvas");
